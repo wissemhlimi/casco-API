@@ -1,0 +1,30 @@
+export default (app) => {
+  app.post(
+    `/tenant/:tenantId/linedoc`,
+    require('./linedocCreate').default,
+  );
+  app.put(
+    `/tenant/:tenantId/linedoc/:id`,
+    require('./linedocUpdate').default,
+  );
+  app.post(
+    `/tenant/:tenantId/linedoc/import`,
+    require('./linedocImport').default,
+  );
+  app.delete(
+    `/tenant/:tenantId/linedoc`,
+    require('./linedocDestroy').default,
+  );
+  app.get(
+    `/tenant/:tenantId/linedoc/autocomplete`,
+    require('./linedocAutocomplete').default,
+  );
+  app.get(
+    `/tenant/:tenantId/linedoc`,
+    require('./linedocList').default,
+  );
+  app.get(
+    `/tenant/:tenantId/linedoc/:id`,
+    require('./linedocFind').default,
+  );
+};

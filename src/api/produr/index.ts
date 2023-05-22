@@ -1,0 +1,30 @@
+export default (app) => {
+  app.post(
+    `/tenant/:tenantId/produr`,
+    require('./produrCreate').default,
+  );
+  app.put(
+    `/tenant/:tenantId/produr/:id`,
+    require('./produrUpdate').default,
+  );
+  app.post(
+    `/tenant/:tenantId/produr/import`,
+    require('./produrImport').default,
+  );
+  app.delete(
+    `/tenant/:tenantId/produr`,
+    require('./produrDestroy').default,
+  );
+  app.get(
+    `/tenant/:tenantId/produr/autocomplete`,
+    require('./produrAutocomplete').default,
+  );
+  app.get(
+    `/tenant/:tenantId/produr`,
+    require('./produrList').default,
+  );
+  app.get(
+    `/tenant/:tenantId/produr/:id`,
+    require('./produrFind').default,
+  );
+};

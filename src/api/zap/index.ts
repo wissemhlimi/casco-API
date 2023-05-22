@@ -1,0 +1,30 @@
+export default (app) => {
+  app.post(
+    `/tenant/:tenantId/zap`,
+    require('./zapCreate').default,
+  );
+  app.put(
+    `/tenant/:tenantId/zap/:id`,
+    require('./zapUpdate').default,
+  );
+  app.post(
+    `/tenant/:tenantId/zap/import`,
+    require('./zapImport').default,
+  );
+  app.delete(
+    `/tenant/:tenantId/zap`,
+    require('./zapDestroy').default,
+  );
+  app.get(
+    `/tenant/:tenantId/zap/autocomplete`,
+    require('./zapAutocomplete').default,
+  );
+  app.get(
+    `/tenant/:tenantId/zap`,
+    require('./zapList').default,
+  );
+  app.get(
+    `/tenant/:tenantId/zap/:id`,
+    require('./zapFind').default,
+  );
+};

@@ -1,0 +1,30 @@
+export default (app) => {
+  app.post(
+    `/tenant/:tenantId/unit`,
+    require('./unitCreate').default,
+  );
+  app.put(
+    `/tenant/:tenantId/unit/:id`,
+    require('./unitUpdate').default,
+  );
+  app.post(
+    `/tenant/:tenantId/unit/import`,
+    require('./unitImport').default,
+  );
+  app.delete(
+    `/tenant/:tenantId/unit`,
+    require('./unitDestroy').default,
+  );
+  app.get(
+    `/tenant/:tenantId/unit/autocomplete`,
+    require('./unitAutocomplete').default,
+  );
+  app.get(
+    `/tenant/:tenantId/unit`,
+    require('./unitList').default,
+  );
+  app.get(
+    `/tenant/:tenantId/unit/:id`,
+    require('./unitFind').default,
+  );
+};
