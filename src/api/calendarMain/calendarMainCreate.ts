@@ -1,16 +1,15 @@
 import PermissionChecker from '../../services/user/permissionChecker';
 import ApiResponseHandler from '../apiResponseHandler';
 import Permissions from '../../security/permissions';
-import ConfigService from '../../services/configService';
+import CalendarMainService from '../../services/calendarMainService';
 
 export default async (req, res, next) => {
   try {
     new PermissionChecker(req).validateHas(
-      Permissions.values.configEdit,
+      Permissions.values.calendarMainCreate,
     );
 
-    const payload = await new ConfigService(req).update(
-      req.params.id,
+    const payload = await new CalendarMainService(req).create(
       req.body.data,
     );
 

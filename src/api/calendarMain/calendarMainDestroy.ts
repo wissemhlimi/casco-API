@@ -1,15 +1,15 @@
 import PermissionChecker from '../../services/user/permissionChecker';
 import ApiResponseHandler from '../apiResponseHandler';
 import Permissions from '../../security/permissions';
-import ConfigService from '../../services/configService';
+import CalendarMainService from '../../services/calendarMainService';
 
 export default async (req, res, next) => {
   try {
     new PermissionChecker(req).validateHas(
-      Permissions.values.configDestroy,
+      Permissions.values.calendarMainDestroy,
     );
 
-    await new ConfigService(req).destroyAll(
+    await new CalendarMainService(req).destroyAll(
       req.query.ids,
     );
 

@@ -4,20 +4,18 @@ import AuditLogRepository from './auditLogRepository';
 import Error404 from '../../errors/Error404';
 import { IRepositoryOptions } from './IRepositoryOptions';
 import lodash from 'lodash';
-import Config from '../models/config';
+import TypicalWeek from '../models/typicalWeek';
+import CalendarMain from '../models/calendarMain';
 
-class ConfigRepository {
-  
+class TypicalWeekRepository {
   static async create(data, options: IRepositoryOptions) {
-    const currentTenant = MongooseRepository.getCurrentTenant(
-      options,
-    );
+    const currentTenant =
+      MongooseRepository.getCurrentTenant(options);
 
-    const currentUser = MongooseRepository.getCurrentUser(
-      options,
-    );
+    const currentUser =
+      MongooseRepository.getCurrentUser(options);
 
-    const [record] = await Config(
+    const [record] = await TypicalWeek(
       options.database,
     ).create(
       [
@@ -26,7 +24,7 @@ class ConfigRepository {
           tenant: currentTenant.id,
           createdBy: currentUser.id,
           updatedBy: currentUser.id,
-        }
+        },
       ],
       options,
     );
@@ -38,32 +36,82 @@ class ConfigRepository {
       options,
     );
 
-    
+    await MongooseRepository.refreshTwoWayRelationOneToMany(
+      record,
+      'mainCalendar',
+      CalendarMain(options.database),
+      'typicalWeek',
+      options,
+    );
 
     return this.findById(record.id, options);
   }
+  static async copy(data, options: IRepositoryOptions) {
+    const currentTenant =
+      MongooseRepository.getCurrentTenant(options);
 
-  static async update(id, data, options: IRepositoryOptions) {
-    const currentTenant = MongooseRepository.getCurrentTenant(
+    const currentUser =
+      MongooseRepository.getCurrentUser(options);
+
+    const [record] = await TypicalWeek(
+      options.database,
+    ).create(
+      [
+        {
+          ...data,
+          name: `${data.name} Copy`,
+          tenant: currentTenant.id,
+          createdBy: currentUser.id,
+          updatedBy: currentUser.id,
+        },
+      ],
       options,
     );
 
-    let record = await MongooseRepository.wrapWithSessionIfExists(
-      Config(options.database).findOne({_id: id, tenant: currentTenant.id}),
+    await this._createAuditLog(
+      AuditLogRepository.CREATE,
+      record.id,
+      data,
       options,
     );
+
+    await MongooseRepository.refreshTwoWayRelationOneToMany(
+      record,
+      'mainCalendar',
+      CalendarMain(options.database),
+      'typicalWeek',
+      options,
+    );
+
+    return this.findById(record.id, options);
+  }
+  static async update(
+    id,
+    data,
+    options: IRepositoryOptions,
+  ) {
+    const currentTenant =
+      MongooseRepository.getCurrentTenant(options);
+
+    let record =
+      await MongooseRepository.wrapWithSessionIfExists(
+        TypicalWeek(options.database).findOne({
+          _id: id,
+          tenant: currentTenant.id,
+        }),
+        options,
+      );
 
     if (!record) {
       throw new Error404();
     }
 
-    await Config(options.database).updateOne(
+    await TypicalWeek(options.database).updateOne(
       { _id: id },
       {
         ...data,
-        updatedBy: MongooseRepository.getCurrentUser(
-          options,
-        ).id,
+        updatedBy:
+          MongooseRepository.getCurrentUser(options).id,
       },
       options,
     );
@@ -77,26 +125,38 @@ class ConfigRepository {
 
     record = await this.findById(id, options);
 
-
+    await MongooseRepository.refreshTwoWayRelationOneToMany(
+      record,
+      'mainCalendar',
+      CalendarMain(options.database),
+      'typicalWeek',
+      options,
+    );
 
     return record;
   }
 
   static async destroy(id, options: IRepositoryOptions) {
-    const currentTenant = MongooseRepository.getCurrentTenant(
-      options,
-    );
+    const currentTenant =
+      MongooseRepository.getCurrentTenant(options);
 
-    let record = await MongooseRepository.wrapWithSessionIfExists(
-      Config(options.database).findOne({_id: id, tenant: currentTenant.id}),
-      options,
-    );
+    let record =
+      await MongooseRepository.wrapWithSessionIfExists(
+        TypicalWeek(options.database).findOne({
+          _id: id,
+          tenant: currentTenant.id,
+        }),
+        options,
+      );
 
     if (!record) {
       throw new Error404();
     }
 
-    await Config(options.database).deleteOne({ _id: id }, options);
+    await TypicalWeek(options.database).deleteOne(
+      { _id: id },
+      options,
+    );
 
     await this._createAuditLog(
       AuditLogRepository.DELETE,
@@ -105,7 +165,12 @@ class ConfigRepository {
       options,
     );
 
-
+    await MongooseRepository.destroyRelationToMany(
+      id,
+      CalendarMain(options.database),
+      'typicalWeek',
+      options,
+    );
   }
 
   static async filterIdInTenant(
@@ -130,7 +195,7 @@ class ConfigRepository {
     const currentTenant =
       MongooseRepository.getCurrentTenant(options);
 
-    const records = await Config(options.database)
+    const records = await TypicalWeek(options.database)
       .find({
         _id: { $in: ids },
         tenant: currentTenant.id,
@@ -141,12 +206,11 @@ class ConfigRepository {
   }
 
   static async count(filter, options: IRepositoryOptions) {
-    const currentTenant = MongooseRepository.getCurrentTenant(
-      options,
-    );
+    const currentTenant =
+      MongooseRepository.getCurrentTenant(options);
 
     return MongooseRepository.wrapWithSessionIfExists(
-      Config(options.database).countDocuments({
+      TypicalWeek(options.database).countDocuments({
         ...filter,
         tenant: currentTenant.id,
       }),
@@ -155,15 +219,16 @@ class ConfigRepository {
   }
 
   static async findById(id, options: IRepositoryOptions) {
-    const currentTenant = MongooseRepository.getCurrentTenant(
-      options,
-    );
+    const currentTenant =
+      MongooseRepository.getCurrentTenant(options);
 
-    let record = await MongooseRepository.wrapWithSessionIfExists(
-      Config(options.database)
-        .findOne({_id: id, tenant: currentTenant.id}),
-      options,
-    );
+    let record =
+      await MongooseRepository.wrapWithSessionIfExists(
+        TypicalWeek(options.database)
+          .findOne({ _id: id, tenant: currentTenant.id })
+          .populate('mainCalendar'),
+        options,
+      );
 
     if (!record) {
       throw new Error404();
@@ -176,12 +241,11 @@ class ConfigRepository {
     { filter, limit = 0, offset = 0, orderBy = '' },
     options: IRepositoryOptions,
   ) {
-    const currentTenant = MongooseRepository.getCurrentTenant(
-      options,
-    );
+    const currentTenant =
+      MongooseRepository.getCurrentTenant(options);
 
     let criteriaAnd: any = [];
-    
+
     criteriaAnd.push({
       tenant: currentTenant.id,
     });
@@ -193,51 +257,33 @@ class ConfigRepository {
         });
       }
 
-      if (filter.configTitle) {
+      if (filter.days) {
         criteriaAnd.push({
-          configTitle: {
+          days: {
             $regex: MongooseQueryUtils.escapeRegExp(
-              filter.configTitle,
+              filter.days,
             ),
             $options: 'i',
           },
         });
       }
 
-      if (filter.configRef) {
+      if (filter.name) {
         criteriaAnd.push({
-          configRef: {
+          name: {
             $regex: MongooseQueryUtils.escapeRegExp(
-              filter.configRef,
+              filter.name,
             ),
             $options: 'i',
           },
         });
       }
 
-      if (filter.configDateRange) {
-        const [start, end] = filter.configDateRange;
-
-        if (start !== undefined && start !== null && start !== '') {
-          criteriaAnd.push({
-            configDate: {
-              $gte: start,
-            },
-          });
-        }
-
-        if (end !== undefined && end !== null && end !== '') {
-          criteriaAnd.push({
-            configDate: {
-              $lte: end,
-            },
-          });
-        }
-      }
-
-      if (filter.configStatus) {
+      if (filter.mainCalendar) {
         criteriaAnd.push({
-          configStatus: filter.configStatus
+          mainCalendar: MongooseQueryUtils.uuid(
+            filter.mainCalendar,
+          ),
         });
       }
 
@@ -280,13 +326,14 @@ class ConfigRepository {
       ? { $and: criteriaAnd }
       : null;
 
-    let rows = await Config(options.database)
+    let rows = await TypicalWeek(options.database)
       .find(criteria)
       .skip(skip)
       .limit(limitEscaped)
-      .sort(sort);
+      .sort(sort)
+      .populate('mainCalendar');
 
-    const count = await Config(
+    const count = await TypicalWeek(
       options.database,
     ).countDocuments(criteria);
 
@@ -297,14 +344,19 @@ class ConfigRepository {
     return { rows, count };
   }
 
-  static async findAllAutocomplete(search, limit, options: IRepositoryOptions) {
-    const currentTenant = MongooseRepository.getCurrentTenant(
-      options,
-    );
+  static async findAllAutocomplete(
+    search,
+    limit,
+    options: IRepositoryOptions,
+  ) {
+    const currentTenant =
+      MongooseRepository.getCurrentTenant(options);
 
-    let criteriaAnd: Array<any> = [{
-      tenant: currentTenant.id,
-    }];
+    let criteriaAnd: Array<any> = [
+      {
+        tenant: currentTenant.id,
+      },
+    ];
 
     if (search) {
       criteriaAnd.push({
@@ -313,35 +365,41 @@ class ConfigRepository {
             _id: MongooseQueryUtils.uuid(search),
           },
           {
-            configTitle: {
-              $regex: MongooseQueryUtils.escapeRegExp(search),
+            name: {
+              $regex:
+                MongooseQueryUtils.escapeRegExp(search),
               $options: 'i',
-            }
-          },          
+            },
+          },
         ],
       });
     }
 
-    const sort = MongooseQueryUtils.sort('configTitle_ASC');
+    const sort = MongooseQueryUtils.sort('name_ASC');
     const limitEscaped = Number(limit || 0) || undefined;
 
     const criteria = { $and: criteriaAnd };
 
-    const records = await Config(options.database)
+    const records = await TypicalWeek(options.database)
       .find(criteria)
       .limit(limitEscaped)
       .sort(sort);
 
     return records.map((record) => ({
       id: record.id,
-      label: record.configTitle,
+      label: record.name,
     }));
   }
 
-  static async _createAuditLog(action, id, data, options: IRepositoryOptions) {
+  static async _createAuditLog(
+    action,
+    id,
+    data,
+    options: IRepositoryOptions,
+  ) {
     await AuditLogRepository.log(
       {
-        entityName: Config(options.database).modelName,
+        entityName: TypicalWeek(options.database).modelName,
         entityId: id,
         action,
         values: data,
@@ -359,12 +417,8 @@ class ConfigRepository {
       ? record.toObject()
       : record;
 
-
-
-
-
     return output;
   }
 }
 
-export default ConfigRepository;
+export default TypicalWeekRepository;

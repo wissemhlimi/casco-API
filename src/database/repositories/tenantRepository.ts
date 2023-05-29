@@ -11,12 +11,14 @@ import Family from '../models/family';
 import Prodline from '../models/prodline';
 import Zap from '../models/zap';
 import Linedoc from '../models/linedoc';
-import Config from '../models/config';
 import ConfigTable from '../models/configTable';
 import Prodtype from '../models/prodtype';
 import Product from '../models/product';
 import PRODUCTline from '../models/pRODUCTline';
 import PRODUCTunit from '../models/pRODUCTunit';
+import CalendarMain from '../models/calendarMain';
+import TypicalWeek from '../models/typicalWeek';
+import SpecialCalendar from '../models/specialCalendar';
 import Error400 from '../../errors/Error400';
 import { v4 as uuid } from 'uuid';
 import { isUserInTenant } from '../utils/userTenantUtils';
@@ -27,9 +29,8 @@ const forbiddenTenantUrls = ['www'];
 
 class TenantRepository {
   static async create(data, options: IRepositoryOptions) {
-    const currentUser = MongooseRepository.getCurrentUser(
-      options,
-    );
+    const currentUser =
+      MongooseRepository.getCurrentUser(options);
 
     // URL is required,
     // in case of multi tenant without subdomain
@@ -56,7 +57,7 @@ class TenantRepository {
           ...data,
           createdBy: currentUser.id,
           updatedBy: currentUser.id,
-        }
+        },
       ],
       options,
     );
@@ -81,9 +82,8 @@ class TenantRepository {
     data,
     options: IRepositoryOptions,
   ) {
-    const currentUser = MongooseRepository.getCurrentUser(
-      options,
-    );
+    const currentUser =
+      MongooseRepository.getCurrentUser(options);
 
     if (!isUserInTenant(currentUser, id)) {
       throw new Error404();
@@ -125,9 +125,8 @@ class TenantRepository {
       { _id: id },
       {
         ...data,
-        updatedBy: MongooseRepository.getCurrentUser(
-          options,
-        ).id,
+        updatedBy:
+          MongooseRepository.getCurrentUser(options).id,
       },
       options,
     );
@@ -151,9 +150,8 @@ class TenantRepository {
     planUserId,
     options: IRepositoryOptions,
   ) {
-    const currentUser = MongooseRepository.getCurrentUser(
-      options,
-    );
+    const currentUser =
+      MongooseRepository.getCurrentUser(options);
 
     const data = {
       planStripeCustomerId,
@@ -189,12 +187,13 @@ class TenantRepository {
       updatedBy: null,
     };
 
-    const record = await MongooseRepository.wrapWithSessionIfExists(
-      Tenant(options.database).findOne({
-        planStripeCustomerId,
-      }),
-      options,
-    );
+    const record =
+      await MongooseRepository.wrapWithSessionIfExists(
+        Tenant(options.database).findOne({
+          planStripeCustomerId,
+        }),
+        options,
+      );
 
     await Tenant(options.database).updateOne(
       { _id: record.id },
@@ -213,18 +212,18 @@ class TenantRepository {
   }
 
   static async destroy(id, options: IRepositoryOptions) {
-    const currentUser = MongooseRepository.getCurrentUser(
-      options,
-    );
+    const currentUser =
+      MongooseRepository.getCurrentUser(options);
 
     if (!isUserInTenant(currentUser, id)) {
       throw new Error404();
     }
 
-    let record = await MongooseRepository.wrapWithSessionIfExists(
-      Tenant(options.database).findById(id),
-      options,
-    );
+    let record =
+      await MongooseRepository.wrapWithSessionIfExists(
+        Tenant(options.database).findById(id),
+        options,
+      );
 
     await Tenant(options.database).deleteOne(
       { _id: id },
@@ -237,30 +236,75 @@ class TenantRepository {
       record,
       options,
     );
+    await CalendarMain(options.database).deleteMany(
+      { tenant: id },
+      options,
+    );
 
-    await Produr(options.database).deleteMany({ tenant: id }, options);
+    await TypicalWeek(options.database).deleteMany(
+      { tenant: id },
+      options,
+    );
 
-    await Unit(options.database).deleteMany({ tenant: id }, options);
+    await SpecialCalendar(options.database).deleteMany(
+      { tenant: id },
+      options,
+    );
 
-    await Family(options.database).deleteMany({ tenant: id }, options);
+    await Produr(options.database).deleteMany(
+      { tenant: id },
+      options,
+    );
 
-    await Prodline(options.database).deleteMany({ tenant: id }, options);
+    await Unit(options.database).deleteMany(
+      { tenant: id },
+      options,
+    );
 
-    await Zap(options.database).deleteMany({ tenant: id }, options);
+    await Family(options.database).deleteMany(
+      { tenant: id },
+      options,
+    );
 
-    await Linedoc(options.database).deleteMany({ tenant: id }, options);
+    await Prodline(options.database).deleteMany(
+      { tenant: id },
+      options,
+    );
 
-    await Config(options.database).deleteMany({ tenant: id }, options);
+    await Zap(options.database).deleteMany(
+      { tenant: id },
+      options,
+    );
 
-    await ConfigTable(options.database).deleteMany({ tenant: id }, options);
+    await Linedoc(options.database).deleteMany(
+      { tenant: id },
+      options,
+    );
 
-    await Prodtype(options.database).deleteMany({ tenant: id }, options);
+    await ConfigTable(options.database).deleteMany(
+      { tenant: id },
+      options,
+    );
 
-    await Product(options.database).deleteMany({ tenant: id }, options);
+    await Prodtype(options.database).deleteMany(
+      { tenant: id },
+      options,
+    );
 
-    await PRODUCTline(options.database).deleteMany({ tenant: id }, options);
+    await Product(options.database).deleteMany(
+      { tenant: id },
+      options,
+    );
 
-    await PRODUCTunit(options.database).deleteMany({ tenant: id }, options);
+    await PRODUCTline(options.database).deleteMany(
+      { tenant: id },
+      options,
+    );
+
+    await PRODUCTunit(options.database).deleteMany(
+      { tenant: id },
+      options,
+    );
 
     await Settings(options.database).deleteMany(
       { tenant: id },
@@ -286,10 +330,11 @@ class TenantRepository {
   }
 
   static async findById(id, options: IRepositoryOptions) {
-    const record = await MongooseRepository.wrapWithSessionIfExists(
-      Tenant(options.database).findById(id),
-      options,
-    );
+    const record =
+      await MongooseRepository.wrapWithSessionIfExists(
+        Tenant(options.database).findById(id),
+        options,
+      );
 
     if (!record) {
       return record;
@@ -308,10 +353,11 @@ class TenantRepository {
   }
 
   static async findByUrl(url, options: IRepositoryOptions) {
-    const record = await MongooseRepository.wrapWithSessionIfExists(
-      Tenant(options.database).findOne({ url }),
-      options,
-    );
+    const record =
+      await MongooseRepository.wrapWithSessionIfExists(
+        Tenant(options.database).findOne({ url }),
+        options,
+      );
 
     if (!record) {
       return null;
@@ -337,9 +383,8 @@ class TenantRepository {
     { filter, limit = 0, offset = 0, orderBy = '' },
     options: IRepositoryOptions,
   ) {
-    const currentUser = MongooseRepository.getCurrentUser(
-      options,
-    );
+    const currentUser =
+      MongooseRepository.getCurrentUser(options);
 
     let criteriaAnd: any = [];
 
@@ -430,9 +475,8 @@ class TenantRepository {
     limit,
     options: IRepositoryOptions,
   ) {
-    const currentUser = MongooseRepository.getCurrentUser(
-      options,
-    );
+    const currentUser =
+      MongooseRepository.getCurrentUser(options);
 
     let criteriaAnd: Array<any> = [
       {
@@ -452,9 +496,8 @@ class TenantRepository {
           },
           {
             name: {
-              $regex: MongooseQueryUtils.escapeRegExp(
-                search,
-              ),
+              $regex:
+                MongooseQueryUtils.escapeRegExp(search),
               $options: 'i',
             },
           },

@@ -172,6 +172,21 @@ const en = {
         unique: {},
       },
     },
+    calendarMain: {
+      errors: {
+        unique: {},
+      },
+    },
+    typicalWeek: {
+      errors: {
+        unique: {},
+      },
+    },
+    specialCalendar: {
+      errors: {
+        unique: {},
+      },
+    },
   },
 };
 

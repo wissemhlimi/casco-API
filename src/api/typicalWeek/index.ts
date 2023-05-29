@@ -1,0 +1,34 @@
+export default (app) => {
+  app.post(
+    `/tenant/:tenantId/typical-week`,
+    require('./typicalWeekCreate').default,
+  );
+  app.post(
+    `/tenant/:tenantId/typical-week/copy`,
+    require('./typicalWeekCopy').default,
+  );
+  app.put(
+    `/tenant/:tenantId/typical-week/:id`,
+    require('./typicalWeekUpdate').default,
+  );
+  app.post(
+    `/tenant/:tenantId/typical-week/import`,
+    require('./typicalWeekImport').default,
+  );
+  app.delete(
+    `/tenant/:tenantId/typical-week`,
+    require('./typicalWeekDestroy').default,
+  );
+  app.get(
+    `/tenant/:tenantId/typical-week/autocomplete`,
+    require('./typicalWeekAutocomplete').default,
+  );
+  app.get(
+    `/tenant/:tenantId/typical-week`,
+    require('./typicalWeekList').default,
+  );
+  app.get(
+    `/tenant/:tenantId/typical-week/:id`,
+    require('./typicalWeekFind').default,
+  );
+};

@@ -898,6 +898,179 @@ class Permissions {
           plans.enterprise,
         ],
       },
+      calendarMainImport: {
+        id: 'calendarMainImport',
+        allowedRoles: [roles.admin],
+        allowedPlans: [
+          plans.free,
+          plans.growth,
+          plans.enterprise,
+        ],
+      },
+      calendarMainCreate: {
+        id: 'calendarMainCreate',
+        allowedRoles: [roles.admin],
+        allowedPlans: [
+          plans.free,
+          plans.growth,
+          plans.enterprise,
+        ],
+        allowedStorage: [],
+      },
+      calendarMainEdit: {
+        id: 'calendarMainEdit',
+        allowedRoles: [roles.admin],
+        allowedPlans: [
+          plans.free,
+          plans.growth,
+          plans.enterprise,
+        ],
+        allowedStorage: [],
+      },
+      calendarMainDestroy: {
+        id: 'calendarMainDestroy',
+        allowedRoles: [roles.admin],
+        allowedPlans: [
+          plans.free,
+          plans.growth,
+          plans.enterprise,
+        ],
+        allowedStorage: [],
+      },
+      calendarMainRead: {
+        id: 'calendarMainRead',
+        allowedRoles: [roles.admin, roles.planificateur],
+        allowedPlans: [
+          plans.free,
+          plans.growth,
+          plans.enterprise,
+        ],
+      },
+      calendarMainAutocomplete: {
+        id: 'calendarMainAutocomplete',
+        allowedRoles: [roles.admin, roles.planificateur],
+        allowedPlans: [
+          plans.free,
+          plans.growth,
+          plans.enterprise,
+        ],
+      },
+
+      typicalWeekImport: {
+        id: 'typicalWeekImport',
+        allowedRoles: [roles.admin],
+        allowedPlans: [
+          plans.free,
+          plans.growth,
+          plans.enterprise,
+        ],
+      },
+      typicalWeekCreate: {
+        id: 'typicalWeekCreate',
+        allowedRoles: [roles.admin],
+        allowedPlans: [
+          plans.free,
+          plans.growth,
+          plans.enterprise,
+        ],
+        allowedStorage: [],
+      },
+      typicalWeekEdit: {
+        id: 'typicalWeekEdit',
+        allowedRoles: [roles.admin],
+        allowedPlans: [
+          plans.free,
+          plans.growth,
+          plans.enterprise,
+        ],
+        allowedStorage: [],
+      },
+      typicalWeekDestroy: {
+        id: 'typicalWeekDestroy',
+        allowedRoles: [roles.admin],
+        allowedPlans: [
+          plans.free,
+          plans.growth,
+          plans.enterprise,
+        ],
+        allowedStorage: [],
+      },
+      typicalWeekRead: {
+        id: 'typicalWeekRead',
+        allowedRoles: [roles.admin, roles.planificateur],
+        allowedPlans: [
+          plans.free,
+          plans.growth,
+          plans.enterprise,
+        ],
+      },
+      typicalWeekAutocomplete: {
+        id: 'typicalWeekAutocomplete',
+        allowedRoles: [roles.admin, roles.planificateur],
+        allowedPlans: [
+          plans.free,
+          plans.growth,
+          plans.enterprise,
+        ],
+      },
+
+      specialCalendarImport: {
+        id: 'specialCalendarImport',
+        allowedRoles: [roles.admin],
+        allowedPlans: [
+          plans.free,
+          plans.growth,
+          plans.enterprise,
+        ],
+      },
+      specialCalendarCreate: {
+        id: 'specialCalendarCreate',
+        allowedRoles: [roles.admin],
+        allowedPlans: [
+          plans.free,
+          plans.growth,
+          plans.enterprise,
+        ],
+        allowedStorage: [],
+      },
+      specialCalendarEdit: {
+        id: 'specialCalendarEdit',
+        allowedRoles: [roles.admin],
+        allowedPlans: [
+          plans.free,
+          plans.growth,
+          plans.enterprise,
+        ],
+        allowedStorage: [],
+      },
+      specialCalendarDestroy: {
+        id: 'specialCalendarDestroy',
+        allowedRoles: [roles.admin],
+        allowedPlans: [
+          plans.free,
+          plans.growth,
+          plans.enterprise,
+        ],
+        allowedStorage: [],
+      },
+      specialCalendarRead: {
+        id: 'specialCalendarRead',
+        allowedRoles: [roles.admin, roles.planificateur],
+        allowedPlans: [
+          plans.free,
+          plans.growth,
+          plans.enterprise,
+        ],
+      },
+      specialCalendarAutocomplete: {
+        id: 'specialCalendarAutocomplete',
+        allowedRoles: [roles.admin, roles.planificateur],
+        allowedPlans: [
+          plans.free,
+          plans.growth,
+          plans.enterprise,
+        ],
+      },
     };
   }
 

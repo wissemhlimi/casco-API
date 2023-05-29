@@ -79,13 +79,15 @@ require('./family').default(routes);
 require('./prodline').default(routes);
 require('./zap').default(routes);
 require('./linedoc').default(routes);
-require('./config').default(routes);
 require('./configTable').default(routes);
 require('./prodtype').default(routes);
 require('./product').default(routes);
 require('./pRODUCTline').default(routes);
 require('./pRODUCTunit').default(routes);
 require('./planning').default(routes);
+require('./calendarMain').default(routes);
+require('./typicalWeek').default(routes);
+require('./specialCalendar').default(routes);
 
 // Loads the Tenant if the :tenantId param is passed
 routes.param('tenantId', tenantMiddleware);

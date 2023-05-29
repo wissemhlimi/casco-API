@@ -1,0 +1,34 @@
+export default (app) => {
+  app.post(
+    `/tenant/:tenantId/special-calendar`,
+    require('./specialCalendarCreate').default,
+  );
+  app.post(
+    `/tenant/:tenantId/special-calendar/copy`,
+    require('./specialCalendarCopy').default,
+  );
+  app.put(
+    `/tenant/:tenantId/special-calendar/:id`,
+    require('./specialCalendarUpdate').default,
+  );
+  app.post(
+    `/tenant/:tenantId/special-calendar/import`,
+    require('./specialCalendarImport').default,
+  );
+  app.delete(
+    `/tenant/:tenantId/special-calendar`,
+    require('./specialCalendarDestroy').default,
+  );
+  app.get(
+    `/tenant/:tenantId/special-calendar/autocomplete`,
+    require('./specialCalendarAutocomplete').default,
+  );
+  app.get(
+    `/tenant/:tenantId/special-calendar`,
+    require('./specialCalendarList').default,
+  );
+  app.get(
+    `/tenant/:tenantId/special-calendar/:id`,
+    require('./specialCalendarFind').default,
+  );
+};

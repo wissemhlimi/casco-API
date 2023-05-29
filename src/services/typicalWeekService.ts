@@ -1,9 +1,10 @@
 import Error400 from '../errors/Error400';
 import MongooseRepository from '../database/repositories/mongooseRepository';
 import { IServiceOptions } from './IServiceOptions';
-import ConfigRepository from '../database/repositories/configRepository';
+import TypicalWeekRepository from '../database/repositories/typicalWeekRepository';
+import CalendarMainRepository from '../database/repositories/calendarMainRepository';
 
-export default class ConfigService {
+export default class TypicalWeekService {
   options: IServiceOptions;
 
   constructor(options) {
@@ -16,12 +17,19 @@ export default class ConfigService {
     );
 
     try {
+      data.mainCalendar =
+        await CalendarMainRepository.filterIdInTenant(
+          data.mainCalendar,
+          { ...this.options, session },
+        );
 
-
-      const record = await ConfigRepository.create(data, {
-        ...this.options,
-        session,
-      });
+      const record = await TypicalWeekRepository.create(
+        data,
+        {
+          ...this.options,
+          session,
+        },
+      );
 
       await MongooseRepository.commitTransaction(session);
 
@@ -32,7 +40,43 @@ export default class ConfigService {
       MongooseRepository.handleUniqueFieldError(
         error,
         this.options.language,
-        'config',
+        'typicalWeek',
+      );
+
+      throw error;
+    }
+  }
+
+  async copy(data) {
+    const session = await MongooseRepository.createSession(
+      this.options.database,
+    );
+
+    try {
+      data.mainCalendar =
+        await CalendarMainRepository.filterIdInTenant(
+          data.mainCalendar,
+          { ...this.options, session },
+        );
+
+      const record = await TypicalWeekRepository.copy(
+        data,
+        {
+          ...this.options,
+          session,
+        },
+      );
+
+      await MongooseRepository.commitTransaction(session);
+
+      return record;
+    } catch (error) {
+      await MongooseRepository.abortTransaction(session);
+
+      MongooseRepository.handleUniqueFieldError(
+        error,
+        this.options.language,
+        'typicalWeek',
       );
 
       throw error;
@@ -45,9 +89,13 @@ export default class ConfigService {
     );
 
     try {
+      data.mainCalendar =
+        await CalendarMainRepository.filterIdInTenant(
+          data.mainCalendar,
+          { ...this.options, session },
+        );
 
-
-      const record = await ConfigRepository.update(
+      const record = await TypicalWeekRepository.update(
         id,
         data,
         {
@@ -65,7 +113,7 @@ export default class ConfigService {
       MongooseRepository.handleUniqueFieldError(
         error,
         this.options.language,
-        'config',
+        'typicalWeek',
       );
 
       throw error;
@@ -79,7 +127,7 @@ export default class ConfigService {
 
     try {
       for (const id of ids) {
-        await ConfigRepository.destroy(id, {
+        await TypicalWeekRepository.destroy(id, {
           ...this.options,
           session,
         });
@@ -93,11 +141,11 @@ export default class ConfigService {
   }
 
   async findById(id) {
-    return ConfigRepository.findById(id, this.options);
+    return TypicalWeekRepository.findById(id, this.options);
   }
 
   async findAllAutocomplete(search, limit) {
-    return ConfigRepository.findAllAutocomplete(
+    return TypicalWeekRepository.findAllAutocomplete(
       search,
       limit,
       this.options,
@@ -105,7 +153,7 @@ export default class ConfigService {
   }
 
   async findAndCountAll(args) {
-    return ConfigRepository.findAndCountAll(
+    return TypicalWeekRepository.findAndCountAll(
       args,
       this.options,
     );
@@ -135,7 +183,7 @@ export default class ConfigService {
   }
 
   async _isImportHashExistent(importHash) {
-    const count = await ConfigRepository.count(
+    const count = await TypicalWeekRepository.count(
       {
         importHash,
       },

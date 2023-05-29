@@ -1,0 +1,34 @@
+export default (app) => {
+  app.post(
+    `/tenant/:tenantId/calendar-main`,
+    require('./calendarMainCreate').default,
+  );
+  app.post(
+    `/tenant/:tenantId/calendar-main/copy`,
+    require('./calendarMainCopy').default,
+  );
+  app.put(
+    `/tenant/:tenantId/calendar-main/:id`,
+    require('./calendarMainUpdate').default,
+  );
+  app.post(
+    `/tenant/:tenantId/calendar-main/import`,
+    require('./calendarMainImport').default,
+  );
+  app.delete(
+    `/tenant/:tenantId/calendar-main`,
+    require('./calendarMainDestroy').default,
+  );
+  app.get(
+    `/tenant/:tenantId/calendar-main/autocomplete`,
+    require('./calendarMainAutocomplete').default,
+  );
+  app.get(
+    `/tenant/:tenantId/calendar-main`,
+    require('./calendarMainList').default,
+  );
+  app.get(
+    `/tenant/:tenantId/calendar-main/:id`,
+    require('./calendarMainFind').default,
+  );
+};

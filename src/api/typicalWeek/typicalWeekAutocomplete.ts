@@ -1,20 +1,17 @@
 import PermissionChecker from '../../services/user/permissionChecker';
 import ApiResponseHandler from '../apiResponseHandler';
 import Permissions from '../../security/permissions';
-import ConfigService from '../../services/configService';
+import TypicalWeekService from '../../services/typicalWeekService';
 
 export default async (req, res, next) => {
   try {
     new PermissionChecker(req).validateHas(
-      Permissions.values.configImport,
+      Permissions.values.typicalWeekAutocomplete,
     );
 
-    await new ConfigService(req).import(
-      req.body.data,
-      req.body.importHash,
-    );
-
-    const payload = true;
+    const payload = await new TypicalWeekService(
+      req,
+    ).findAllAutocomplete(req.query.query, req.query.limit);
 
     await ApiResponseHandler.success(req, res, payload);
   } catch (error) {

@@ -3,32 +3,42 @@ const Schema = mongoose.Schema;
 
 export default (database) => {
   try {
-    return database.model('config');
+    return database.model('calendarMain');
   } catch (error) {
     // continue, because model doesnt exist
   }
 
-  const ConfigSchema = new Schema(
+  const CalendarMainSchema = new Schema(
     {
-      configTitle: {
+      title: {
         type: String,
-        required: true,
+        maxlength: 1000,
       },
-      configRef: {
+      active: {
+        type: Boolean,
+        default: false
+      },
+      startDate: {
         type: String,
-        required: true,
       },
-      configDate: {
+      endDate: {
         type: String,
       },
-      configStatus: {
-        type: String,
-        enum: [
-          "active",
-          "locked",
-          null
-        ],
+      fraquence: {
+        type: Number,
       },
+      comment: {
+        type: String,
+        maxlength: 5000,
+      },
+      typicalWeek: [{
+        type: Schema.Types.ObjectId,
+        ref: 'typicalWeek',
+      }],
+      specialCalendar: [{
+        type: Schema.Types.ObjectId,
+        ref: 'specialCalendar',
+      }],
       tenant: {
         type: Schema.Types.ObjectId,
         ref: 'tenant',
@@ -47,7 +57,7 @@ export default (database) => {
     { timestamps: true },
   );
 
-  ConfigSchema.index(
+  CalendarMainSchema.index(
     { importHash: 1, tenant: 1 },
     {
       unique: true,
@@ -57,38 +67,20 @@ export default (database) => {
     },
   );
 
-  ConfigSchema.index(
-    { configTitle: 1, tenant: 1 },
-    {
-      unique: true,
-      partialFilterExpression: {
-        configTitle: { $type: 'string' },
-      },
-    },
-  );
+  
 
-  ConfigSchema.index(
-    { configRef: 1, tenant: 1 },
-    {
-      unique: true,
-      partialFilterExpression: {
-        configRef: { $type: 'string' },
-      },
-    },
-  );  
-
-  ConfigSchema.virtual('id').get(function () {
+  CalendarMainSchema.virtual('id').get(function () {
     // @ts-ignore
     return this._id.toHexString();
   });
 
-  ConfigSchema.set('toJSON', {
+  CalendarMainSchema.set('toJSON', {
     getters: true,
   });
 
-  ConfigSchema.set('toObject', {
+  CalendarMainSchema.set('toObject', {
     getters: true,
   });
 
-  return database.model('config', ConfigSchema);
+  return database.model('calendarMain', CalendarMainSchema);
 };

@@ -9,13 +9,15 @@ const models = [
   require('./prodline').default,
   require('./zap').default,
   require('./linedoc').default,
-  require('./config').default,
   require('./configTable').default,
   require('./prodtype').default,
   require('./product').default,
   require('./pRODUCTline').default,
   require('./pRODUCTunit').default,
   require('./planning').default,
+  require('./calendarMain').default,
+  require('./typicalWeek').default,
+  require('./specialCalendar').default,
 ];
 
 export default function init(database) {

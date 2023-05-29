@@ -10,8 +10,8 @@ import Error403 from '../../errors/Error403';
  * The directory where the files should be uploaded.
  * Change this to a persisted folder.
  */
-// const UPLOAD_DIR = os.homedir();
-const UPLOAD_DIR = '/upload/';
+const UPLOAD_DIR = os.homedir();
+// const UPLOAD_DIR = '/upload/';
 export default class LocalFileStorage {
   /**
    * Creates a signed upload URL that enables
